@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:money_app/views/home/transaction.dart';
 import 'package:money_app/views/home/wallet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -51,13 +52,6 @@ class _HomeState extends State<Home> {
         backgroundColor: HexColor("#272727"),
       ),
       body: SingleChildScrollView(child: balanceInfo()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("A");
-        },
-        backgroundColor: HexColor("#e48d7a"),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
@@ -123,14 +117,28 @@ class _HomeState extends State<Home> {
           ),
         ),
         ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemCount: balanceDetail.walletAvailableBalanceGetDtos.length,
             itemBuilder: (BuildContext c, int index) {
               return GestureDetector(
                 onTap: () {
-                  print("A");
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                    builder: (context) => MyTransaction(
+                        userId,
+                        balanceDetail
+                            .walletAvailableBalanceGetDtos[index].walletId,
+                        balanceDetail
+                            .walletAvailableBalanceGetDtos[index].walletName,
+                        balanceDetail.walletAvailableBalanceGetDtos[index]
+                            .availableBalance),
+                  ))
+                      .then((value) {
+                    setState(() {
+                      balance = fetchBalance();
+                    });
+                  });
                 },
                 child: Container(
                   height: 100,

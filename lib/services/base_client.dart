@@ -5,11 +5,21 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/balance.dart';
+import '../models/category.dart';
 
 const String baseUrl = 'http://longdo1-001-site1.dtempurl.com';
 // const String baseUrl = 'https://3e1e-171-251-31-210.ngrok.io';
 class BaseClient {
   var client = http.Client();   
+  Future<dynamic> getCategories() async {
+    var url = Uri.parse("$baseUrl/Category/all");
+    var response = await client.get(url);
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      print(jsonString);
+      return categoryFromJson(jsonString);
+    }
+  }
   Future<dynamic> getBalance(String userId) async {
     var url = Uri.parse("$baseUrl/Wallet/user/$userId/total-balance");
     var response = await client.get(url);
@@ -30,6 +40,7 @@ class BaseClient {
     };
     var _payload = json.encode(object);
     var response = await client.post(url, body: _payload, headers: _headers);
+    log(response.body);
     return response;
   }
 

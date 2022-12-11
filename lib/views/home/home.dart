@@ -25,19 +25,16 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
   }
 
-  getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('userId') ?? '';
+  getData() {
     if (mounted && userId != '') {
-      setState(() {
         balance = fetchBalance();
-      });
     }
   }
-
+  Future<SharedPreferences> _getPrefs() async {
+    return await SharedPreferences.getInstance();
+  }
   Future<Balance> fetchBalance() async {
     return await BaseClient().getBalance(userId).catchError((err) {
       print(err);
@@ -51,8 +48,32 @@ class _HomeState extends State<Home> {
         title: const Text("MoneyApp"),
         backgroundColor: HexColor("#272727"),
       ),
-      body: SingleChildScrollView(child: balanceInfo()),
+      body: SingleChildScrollView(child: checkLogin()),
     );
+  }
+
+  FutureBuilder<SharedPreferences> checkLogin() {
+    return FutureBuilder<SharedPreferences>(
+        future: _getPrefs(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            userId = snapshot.data!.getString('userId') ?? '';
+            if (userId == '') {
+              return SizedBox(
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: const Center(
+                      child: Text("Bạn chưa đăng nhập!!!")));
+            }
+            getData();
+            return balanceInfo();
+          }
+
+          return SizedBox(
+              height: MediaQuery.of(context).size.height - 100,
+              child: Center(
+                  child:
+                      CircularProgressIndicator(color: HexColor("#e48d7a"))));
+        });
   }
 
   FutureBuilder<Balance> balanceInfo() {

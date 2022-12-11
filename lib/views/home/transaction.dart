@@ -25,6 +25,7 @@ class MyTransaction extends StatefulWidget {
 }
 
 class _MyTransactionState extends State<MyTransaction> {
+  int transactionType = 0;
   int categoryId = 15;
   String categoryName = "";
   String categoryLogo = "";
@@ -206,12 +207,47 @@ class _MyTransactionState extends State<MyTransaction> {
                                 Text(
                                   categoryName,
                                   style: const TextStyle(
-                                      color: Colors.grey, fontSize: 17),
+                                      color: Colors.black, fontSize: 17),
                                 ),
                               ]),
                             ),
                           ]
                         ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      height: 60,
+                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: DropdownButton(
+                        underline: const SizedBox(),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: 0, child: Text("Thu nhập")),
+                          DropdownMenuItem(value: 1, child: Text("Tiêu dùng")),
+                        ], 
+                        value: transactionType,
+                        onChanged: ((value) {
+                          setState(() {
+                            transactionType = int.parse(value.toString());
+                          });
+                        })
+
                       ),
                     ),
                     const SizedBox(
@@ -240,13 +276,19 @@ class _MyTransactionState extends State<MyTransaction> {
                     IconButton(
                       color: HexColor("#e48d7a"),
                       onPressed: () async {
+                        final DateTime now = DateTime.now();
+                        final DateFormat formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        final String formatted = formatter.format(now);
                         var transaction = {
                           "walletId": widget.walletId,
                           "userId": widget.userId,
                           "amount": int.parse(amountController.text),
                           "description": descriptionController.text,
-                          "transactionType": categoryId,
+                          "categoryId": categoryId,
+                          "transactionType": transactionType,
+                          "createdAt": formatted,
                         };
+                        print(transaction);
                         if (walletNameController.text != widget.walletName) {
                           var response = await BaseClient()
                               .post('/Wallet/${widget.walletId}/rename?name="${walletNameController.text}"',

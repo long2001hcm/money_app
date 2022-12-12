@@ -63,7 +63,7 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView> {
               icon: const Icon(Icons.arrow_back_ios),
             ),
           ),
-          body: SingleChildScrollView(child: transactionHistoryInfo())),
+          body: SingleChildScrollView(child: Column(children: [transactionHistoryInfo()]))),
     );
   }
 
@@ -133,6 +133,7 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView> {
                       style: const TextStyle(color: Colors.green)),
                 ],
               ),
+              const SizedBox(height: 5),
               Row(
                 children: [
                   const Text("Tiêu dùng: "),
@@ -159,7 +160,7 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView> {
         itemCount: historyDetail.length,
         itemBuilder: (BuildContext c, int index) {
           return Container(
-            height: 115,
+            height: 140,
             margin: const EdgeInsets.fromLTRB(5, 10, 5, 0),
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             decoration: BoxDecoration(
@@ -225,6 +226,19 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView> {
                       ]
                     ],
                   ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Text("Mô tả: ",
+                          style: TextStyle(color: Colors.grey)),
+                      if (historyDetail[index].description == "") ... [
+                        const Text("Không",
+                          style: TextStyle(color: Colors.grey)),
+                      ] else ... [
+                        Text(historyDetail[index].description, maxLines: 1),
+                      ]
+                    ],
+                  ),
                 ]),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +252,7 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView> {
                           const Icon(Icons.error),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           );

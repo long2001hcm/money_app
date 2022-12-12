@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/balance.dart';
+import '../models/balance_group.dart';
 import '../models/category.dart';
 import '../models/user_info.dart';
 
@@ -12,6 +13,16 @@ const String baseUrl = 'http://longdo1-001-site1.dtempurl.com';
 // const String baseUrl = 'https://3e1e-171-251-31-210.ngrok.io';
 class BaseClient {
   var client = http.Client();   
+  Future<dynamic> getBalanceGroup(String userId, int type, String period) async {
+    var url = Uri.parse("$baseUrl/Wallet/user/$userId/balance-category-group?TransactionType=$type&Period=$period");
+    print(url);
+    var response = await client.get(url);
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      print(jsonString);
+      return balanceGroupFromJson(jsonString);
+    }
+  }
   Future<dynamic> getUserInfo(String userId) async {
     var url = Uri.parse("$baseUrl/AuthManagement/me/$userId");
     var response = await client.get(url);

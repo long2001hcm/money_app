@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hexcolor/hexcolor.dart';
@@ -103,7 +104,11 @@ class _CategoryViewState extends State<CategoryView> {
                     ),
                     child: Row(
                         children: [
-                          Image.network(categories[index].logo, width: 70,),
+                          CachedNetworkImage(
+                            width: 70,
+                            imageUrl: categories[index].logo,
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          ),
                           const SizedBox(width: 15),
                           Text(
                             categories[index]
@@ -148,9 +153,11 @@ class _CategoryViewState extends State<CategoryView> {
                             ),
                             child: Row(
                               children: [
-                              Image.network(
-                                categories[index].subCategories[index2].logo,
-                                width: 50,
+                              CachedNetworkImage(
+                                width: 70,
+                                imageUrl: categories[index].subCategories[index2].logo,
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                               const SizedBox(width: 15),
                               Text(

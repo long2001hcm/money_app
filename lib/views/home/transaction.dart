@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:money_app/views/settings/authenticate/register.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -199,9 +200,12 @@ class _MyTransactionState extends State<MyTransaction> {
                               ),
                               child: Row(children: [
                                 const SizedBox(width: 15),
-                                Image.network(
-                                  categoryLogo,
+                                CachedNetworkImage(
                                   width: 50,
+                                  imageUrl:
+                                      categoryLogo,
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                                 const SizedBox(width: 15),
                                 Text(

@@ -7,15 +7,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/balance.dart';
 import '../models/balance_group.dart';
 import '../models/category.dart';
+import '../models/transaction_history.dart';
 import '../models/user_info.dart';
 
 const String baseUrl = 'http://longdo1-001-site1.dtempurl.com';
+
 // const String baseUrl = 'https://3e1e-171-251-31-210.ngrok.io';
 class BaseClient {
-  var client = http.Client();   
-  Future<dynamic> getBalanceGroup(String userId, int type, String period) async {
-    var url = Uri.parse("$baseUrl/Wallet/user/$userId/balance-category-group?TransactionType=$type&Period=$period");
-    print(url);
+  var client = http.Client();
+  Future<dynamic> getTransactionHistory(String userId, String period) async {
+    var url = Uri.parse(
+        "$baseUrl/Wallet/user/$userId/transaction-history?Period=$period");
+    var response = await client.get(url);
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      log(jsonString);
+      return transactionHistoryFromJson(jsonString);
+    }
+  }
+
+  Future<dynamic> getBalanceGroup(
+      String userId, int type, String period) async {
+    var url = Uri.parse(
+        "$baseUrl/Wallet/user/$userId/balance-category-group?TransactionType=$type&Period=$period");
     var response = await client.get(url);
     if (response.statusCode == 200) {
       var jsonString = response.body;
@@ -23,6 +37,7 @@ class BaseClient {
       return balanceGroupFromJson(jsonString);
     }
   }
+
   Future<dynamic> getUserInfo(String userId) async {
     var url = Uri.parse("$baseUrl/AuthManagement/me/$userId");
     var response = await client.get(url);
@@ -32,6 +47,7 @@ class BaseClient {
       return userFromJson(jsonString);
     }
   }
+
   Future<dynamic> getCategories() async {
     var url = Uri.parse("$baseUrl/Category/all");
     var response = await client.get(url);
@@ -41,6 +57,7 @@ class BaseClient {
       return categoryFromJson(jsonString);
     }
   }
+
   Future<dynamic> getBalance(String userId) async {
     var url = Uri.parse("$baseUrl/Wallet/user/$userId/total-balance");
     var response = await client.get(url);
@@ -50,6 +67,7 @@ class BaseClient {
       return balanceFromJson(jsonString);
     }
   }
+
   Future<dynamic> post(String api, dynamic object) async {
     var url = Uri.parse(baseUrl + api);
     final prefs = await SharedPreferences.getInstance();
@@ -57,7 +75,7 @@ class BaseClient {
     var _headers = {
       "Authorization": token,
       "Accept": "application/json",
-      "content-type":"application/json"
+      "content-type": "application/json"
     };
     var _payload = json.encode(object);
     var response = await client.post(url, body: _payload, headers: _headers);
@@ -68,5 +86,4 @@ class BaseClient {
   Future<dynamic> put(String api) async {}
 
   Future<dynamic> delete(String api) async {}
-  
 }

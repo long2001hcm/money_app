@@ -256,7 +256,7 @@ class _SettingsState extends State<Settings> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TransactionHistory(userId),
+                        builder: (context) => TransactionHistoryView(userId),
                       ));
                 },
                 child: const Text('Lịch sử giao dịch'),
@@ -289,7 +289,9 @@ class _SettingsState extends State<Settings> {
               ),
               const SizedBox(height: 15),
               balanceOutcomeInfo(),
-              const SizedBox(height: 15),
+              if (dataMap.isEmpty) ... [
+                const SizedBox(height: 15),
+              ],
               balanceIncomeInfo(),
               if (dataMap.isNotEmpty) ... [
                 const Text("Nhấn để xem chi tiết",

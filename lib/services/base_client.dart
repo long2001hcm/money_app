@@ -11,7 +11,7 @@ import '../models/transaction_history.dart';
 import '../models/user_info.dart';
 
 const String baseUrl = 'http://longdo1-001-site1.dtempurl.com';
-
+const String baseUrl2 = 'http://longdo2-001-site1.htempurl.com';
 // const String baseUrl = 'https://3e1e-171-251-31-210.ngrok.io';
 class BaseClient {
   var client = http.Client();
@@ -70,6 +70,21 @@ class BaseClient {
 
   Future<dynamic> post(String api, dynamic object) async {
     var url = Uri.parse(baseUrl + api);
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    var _headers = {
+      "Authorization": token,
+      "Accept": "application/json",
+      "content-type": "application/json"
+    };
+    var _payload = json.encode(object);
+    var response = await client.post(url, body: _payload, headers: _headers);
+    log(response.body);
+    return response;
+  }
+
+  Future<dynamic> post2(String api, dynamic object) async {
+    var url = Uri.parse(baseUrl2 + api);
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
     var _headers = {

@@ -79,11 +79,11 @@ class TransactionGetDto {
             : json["walletName"],
         amount: json["amount"].toDouble() == null ? null : json["amount"].toDouble(),
         description: json["description"] == null
-            ? null
+            ? ""
             : json["description"],
         transactionType:
             json["transactionType"] == null ? null : json["transactionType"],
-        createdAt: json["createdAt"],
+        createdAt: json["createdAt"] == null ? null : json["createdAt"],
         paymentType: json["paymentType"] == null
             ? null
             : json["paymentType"],

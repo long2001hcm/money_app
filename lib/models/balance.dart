@@ -37,22 +37,26 @@ class WalletAvailableBalanceGetDto {
     required this.availableBalance,
     required this.walletId,
     required this.walletName,
+    required this.walletType,
   });
 
   double availableBalance;
   String walletId;
   String walletName;
+  String walletType;
 
   factory WalletAvailableBalanceGetDto.fromJson(Map<String, dynamic> json) =>
       WalletAvailableBalanceGetDto(
         availableBalance: json["availableBalance"],
         walletId: json["walletId"],
         walletName: json["walletName"] == null ? null : json["walletName"],
+        walletType: json["walletType"] == null ? null : json["walletType"],
       );
 
   Map<String, dynamic> toJson() => {
         "availableBalance": availableBalance,
         "walletId": walletId,
         "walletName": walletName,
+        "walletType": walletType,
       };
 }

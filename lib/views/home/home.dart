@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../../models/balance.dart';
 import '../../services/base_client.dart';
+import 'bank_wallet.dart';
 
 // import 'package:helloworld/authenticate/register.dart';
 // import 'package:helloworld/authenticate/login.dart';
@@ -138,28 +139,31 @@ class _HomeState extends State<Home> {
           ),
         ),
         ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemCount: balanceDetail.walletAvailableBalanceGetDtos.length,
             itemBuilder: (BuildContext c, int index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                    builder: (context) => MyTransaction(
-                        userId,
-                        balanceDetail
-                            .walletAvailableBalanceGetDtos[index].walletId,
-                        balanceDetail
-                            .walletAvailableBalanceGetDtos[index].walletName,
-                        balanceDetail.walletAvailableBalanceGetDtos[index]
-                            .availableBalance),
-                  ))
-                      .then((value) {
-                    setState(() {
-                      balance = fetchBalance();
+                  if (balanceDetail.walletAvailableBalanceGetDtos[index].walletType != "BankWallet") {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                      builder: (context) => MyTransaction(
+                          userId,
+                          balanceDetail
+                              .walletAvailableBalanceGetDtos[index].walletId,
+                          balanceDetail
+                              .walletAvailableBalanceGetDtos[index].walletName,
+                          balanceDetail.walletAvailableBalanceGetDtos[index]
+                              .availableBalance),
+                    ))
+                        .then((value) {
+                      setState(() {
+                        balance = fetchBalance();
+                      });
                     });
-                  });
+                  }
                 },
                 child: Container(
                   height: 100,
@@ -201,15 +205,60 @@ class _HomeState extends State<Home> {
         const SizedBox(height: 15),
         IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(
-                builder: (context) => MyWallet(userId),
-              ))
-                  .then((value) {
-                setState(() {
-                  balance = fetchBalance();
-                });
-              });
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                      actionsPadding: const EdgeInsets.all(15),
+                      actions: [SizedBox(
+                        height: 125,
+                        width: 125,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HexColor("#e48d7a"),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                            Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                  builder: (context) => MyWallet(userId),
+                                ))
+                                    .then((value) {
+                                  setState(() {
+                                    balance = fetchBalance();
+                                  });
+                                });
+                            
+                          },
+                          child: const Text('Ví cơ bản',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 125,
+                        width: 125,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HexColor("#e48d7a"),
+                          ),
+                          onPressed: ()  {
+                            Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                  builder: (context) => const MyBankWallet(),
+                                ))
+                                    .then((value) {
+                                  setState(() {
+                                    balance = fetchBalance();
+                                  });
+                                });
+                          },
+                          child: const Text('Ví liên kết ngân hàng', textAlign: TextAlign.center),
+                        ),
+                      )],),
+                  barrierDismissible: true);
+              
             },
             icon: Icon(Icons.add, color: HexColor("#e48d7a"))),
       ],

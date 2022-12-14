@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/balance.dart';
 import '../models/balance_group.dart';
+import '../models/bank.dart';
 import '../models/category.dart';
 import '../models/transaction_history.dart';
 import '../models/user_info.dart';
@@ -47,7 +48,15 @@ class BaseClient {
       return userFromJson(jsonString);
     }
   }
-
+  Future<dynamic> getBanks() async {
+    var url = Uri.parse("$baseUrl/BankConnection/bank-list");
+    var response = await client.get(url);
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      print(jsonString);
+      return bankFromJson(jsonString);
+    }
+  }
   Future<dynamic> getCategories() async {
     var url = Uri.parse("$baseUrl/Category/all");
     var response = await client.get(url);

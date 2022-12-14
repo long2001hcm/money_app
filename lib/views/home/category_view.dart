@@ -119,7 +119,7 @@ class _CategoryViewState extends State<CategoryView> {
                         ]),
                   ),
                 ),
-                if (categories[index].subCategories.length > 0) ...[
+                if (categories[index].subCategories.isNotEmpty) ...[
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
